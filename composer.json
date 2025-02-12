@@ -1,0 +1,32 @@
+{
+    "config": {
+        "platform": {
+            "php": "8.4"
+        }
+    },
+    "name": "kabakov/spaceship",
+    "description": "Like game but better :)",
+    "type": "project",
+    "require": {
+        "webmozart/assert": "*",
+        "symfony/console": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ivan Kabakov",
+            "email": "ivan.kabakov@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "*",
+        "vimeo/psalm": "*",
+        "symfony/var-dumper": "*",
+        "phpunit/phpunit": "*",
+        "phpunit/php-code-coverage": "*"
+    }
+}
