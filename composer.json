@@ -9,7 +9,8 @@
     "type": "project",
     "require": {
         "webmozart/assert": "*",
-        "symfony/console": "*"
+        "symfony/console": "*",
+        "filp/whoops": "^2.17"
     },
     "autoload": {
         "psr-4": {
