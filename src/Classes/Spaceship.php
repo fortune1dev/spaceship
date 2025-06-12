@@ -6,7 +6,6 @@ namespace App\Classes;
 
 use App\Contracts\IMovable;
 use App\Contracts\IRotatable;
-use App\Classes\Vector;
 
 class Spaceship implements IRotatable, IMovable
 {
@@ -21,7 +20,7 @@ class Spaceship implements IRotatable, IMovable
     ) {
         $this->position = $initialPosition;
         $this->velocity = $initialVelocity;
-        $this->angle = $this->normalizeAngle($initialAngle);
+        $this->angle    = $this->normalizeAngle($initialAngle);
     }
 
     public function getAngle(): float
@@ -63,7 +62,9 @@ class Spaceship implements IRotatable, IMovable
         if ($normalized < 0) {
             $normalized += 360;
         }
-        return $normalized;
+
+        // Нормализация значений, близких к 360
+        return $normalized >= 360 ? 0.0 : $normalized;
     }
 
     /**
@@ -72,9 +73,13 @@ class Spaceship implements IRotatable, IMovable
     public function applyRotationToVelocity(): void
     {
         $radians = deg2rad($this->angle);
-        $x = $this->velocity->x * cos($radians) - $this->velocity->y * sin($radians);
-        $y = $this->velocity->x * sin($radians) + $this->velocity->y * cos($radians);
-        
-        $this->velocity = new Vector($x, $y);
+        $x       = $this->velocity->x * cos($radians) - $this->velocity->y * sin($radians);
+        $y       = $this->velocity->x * sin($radians) + $this->velocity->y * cos($radians);
+
+        // Округляем до 10 знаков после запятой для стабильности тестов
+        $this->velocity = new Vector(
+            round($x, 10),
+            round($y, 10)
+        );
     }
 }
