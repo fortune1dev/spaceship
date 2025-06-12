@@ -20,12 +20,12 @@ jobs:
       - name: Install system dependencies
         run: |
           apt-get update && apt-get install -y \
+              php-xdebug \
               git \
               unzip \
               libzip-dev \
               zlib1g-dev
 
-          # Установка Xdebug (уже включен в PHP 8.4, но нужно активировать)
           docker-php-ext-install zip
           docker-php-ext-enable xdebug
 
