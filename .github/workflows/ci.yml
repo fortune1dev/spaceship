@@ -20,13 +20,18 @@ jobs:
       - name: Install system dependencies
         run: |
           apt-get update && apt-get install -y \
-              php-xdebug \
               git \
               unzip \
               libzip-dev \
-              zlib1g-dev
+              zlib1g-dev \
+              autoconf \
+              g++ \
+              make
 
           docker-php-ext-install zip
+          
+          # Установка Xdebug через PECL
+          pecl install xdebug
           docker-php-ext-enable xdebug
 
       - name: Install Composer
