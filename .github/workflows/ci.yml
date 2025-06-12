@@ -1,0 +1,55 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    container:
+      image: php:8.4-cli
+      options: --user root
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          apt-get update && apt-get install -y \
+              git \
+              unzip \
+              libzip-dev \
+              zlib1g-dev
+
+          # Установка Xdebug (уже включен в PHP 8.4, но нужно активировать)
+          docker-php-ext-install zip
+          docker-php-ext-enable xdebug
+
+      - name: Install Composer
+        run: |
+          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+          composer self-update
+
+      - name: Install project dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Configure Xdebug
+        run: |
+          echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+          echo "xdebug.start_with_request=trigger" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+          cat /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+      - name: Run tests with coverage
+        run: |
+          mkdir -p build/logs
+          vendor/bin/phpunit --coverage-clover build/logs/clover.xml --coverage-html build/coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: build/coverage
